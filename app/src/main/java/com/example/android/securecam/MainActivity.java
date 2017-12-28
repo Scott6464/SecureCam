@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -49,7 +50,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
     private void emailGif() {
 
         try {
@@ -78,23 +78,42 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void makeGif() {
-        //        new MovieMaker(getApplicationContext());
-        // True for dither. Will need more memory and CPU
         String path = getFilesDir().getAbsolutePath();
         AnimatedGIFWriter writer = new AnimatedGIFWriter(true);
         try {
             OutputStream os = new FileOutputStream(path + "/output.gif");
             Bitmap[] bitmap = new Bitmap[3];
             int[] delays = {1000, 1000, 1000};
-            bitmap[0] = BitmapFactory.decodeStream(new FileInputStream(path + "/0.jpg"));
-            bitmap[1] = BitmapFactory.decodeStream(new FileInputStream(path + "/1.jpg"));
-            bitmap[2] = BitmapFactory.decodeStream(new FileInputStream(path + "/2.jpg"));
+            bitmap[0] = getResizedBitmap(rotateImage(BitmapFactory.decodeStream(new FileInputStream(path + "/0.jpg")),90),320);
+            bitmap[1] = getResizedBitmap(rotateImage(BitmapFactory.decodeStream(new FileInputStream(path + "/1.jpg")),90),320);
+            bitmap[2] = getResizedBitmap(rotateImage(BitmapFactory.decodeStream(new FileInputStream(path + "/2.jpg")),90),320);
             writer.writeAnimatedGIF(bitmap, delays, os);
-            //writer.write(bitmap, os);
             Toast.makeText(getApplicationContext(), "Gif generated.", Toast.LENGTH_LONG).show();
         } catch (Exception e) {
             Log.e(e.toString(), e.getMessage());
         }
+    }
+
+    private static Bitmap rotateImage(Bitmap img, int degree) {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(degree);
+        return Bitmap.createBitmap(img, 0, 0, img.getWidth(), img.getHeight(), matrix, true);
+    }
+
+    public Bitmap getResizedBitmap(Bitmap image, int maxSize) {
+        int width = image.getWidth();
+        int height = image.getHeight();
+
+        float bitmapRatio = (float) width / (float) height;
+        if (bitmapRatio > 1) {
+            width = maxSize;
+            height = (int) (width / bitmapRatio);
+        } else {
+            height = maxSize;
+            width = (int) (height * bitmapRatio);
+        }
+
+        return Bitmap.createScaledBitmap(image, width, height, true);
     }
 
 

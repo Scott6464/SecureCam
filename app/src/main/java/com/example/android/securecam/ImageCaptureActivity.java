@@ -27,7 +27,7 @@ public class ImageCaptureActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.still);
+        setContentView(R.layout.capture);
         final CameraSurfaceView cameraView = new CameraSurfaceView(getApplicationContext());
         FrameLayout frame = (FrameLayout) findViewById(R.id.frame);
         frame.addView(cameraView);
@@ -55,7 +55,9 @@ public class ImageCaptureActivity extends Activity {
                     //Log.d("Still image filename:", pathForAppFiles);
                     Toast.makeText(getApplicationContext(), "Picture saved. " + photoFiles[i], Toast.LENGTH_LONG).show();
                     i++;
-                    if (i > 2){i = 0;}
+                    if (i > 2) {
+                        i = 0;
+                    }
                 } catch (Exception e) {
                     Log.e("Still", "Error writing file", e);
                 }
@@ -93,7 +95,7 @@ public class ImageCaptureActivity extends Activity {
                     Log.d(DEBUG_TAG, "Preview size: (" + pickedSize.width + ","
                             + pickedSize.height + ")");
                     // even after setting a supported size, the preview size may
-                    // still end up just being the surface size (supported or
+                    // capture end up just being the surface size (supported or
                     // not)
                     camera.setParameters(params);
                 }
@@ -125,6 +127,7 @@ public class ImageCaptureActivity extends Activity {
                         bestFit = item;
                     }
                 }
+                //Toast.makeText(getApplicationContext(), bestFit.width + " " + bestFit.height, Toast.LENGTH_LONG).show();
             }
             return bestFit;
         }
@@ -153,4 +156,5 @@ public class ImageCaptureActivity extends Activity {
             }
         }
     }
+
 }
