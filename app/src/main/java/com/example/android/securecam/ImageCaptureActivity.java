@@ -6,6 +6,7 @@ import android.hardware.Camera;
 import android.hardware.Camera.Size;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -35,7 +36,7 @@ public class ImageCaptureActivity extends Activity {
         Button capture = (Button) findViewById(R.id.capture);
         capture.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                capturePhoto(cameraView);
+        capturePhoto(cameraView);
             }
         });
     }

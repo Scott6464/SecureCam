@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -27,6 +28,12 @@ public class MainActivity extends AppCompatActivity {
                 1);
     }
 
+    public void detectMotion(View v) {
+        boolean motionDetected;
+        MotionDetection md = new MotionDetection(this);
+        if (md.detectMotion()){Toast.makeText(this, "Motion Detected", Toast.LENGTH_LONG).show();}
+        else {Toast.makeText(this, "No Motion", Toast.LENGTH_LONG).show();}
+    }
 
     public void sendReport(View v) {
         Thread t = new Thread() {
@@ -84,9 +91,10 @@ public class MainActivity extends AppCompatActivity {
             OutputStream os = new FileOutputStream(path + "/output.gif");
             Bitmap[] bitmap = new Bitmap[3];
             int[] delays = {1000, 1000, 1000};
-            bitmap[0] = getResizedBitmap(rotateImage(BitmapFactory.decodeStream(new FileInputStream(path + "/0.jpg")),90),320);
-            bitmap[1] = getResizedBitmap(rotateImage(BitmapFactory.decodeStream(new FileInputStream(path + "/1.jpg")),90),320);
-            bitmap[2] = getResizedBitmap(rotateImage(BitmapFactory.decodeStream(new FileInputStream(path + "/2.jpg")),90),320);
+            bitmap[0] = getResizedBitmap(rotateImage(BitmapFactory.decodeStream(new FileInputStream(path + "/0.jpg")), 90), 320);
+            bitmap[1] = getResizedBitmap(rotateImage(BitmapFactory.decodeStream(new FileInputStream(path + "/1.jpg")), 90), 320);
+            bitmap[2] = getResizedBitmap(rotateImage(BitmapFactory.decodeStream(new FileInputStream(path + "/2.jpg")), 90), 320);
+
             writer.writeAnimatedGIF(bitmap, delays, os);
             Toast.makeText(getApplicationContext(), "Gif generated.", Toast.LENGTH_LONG).show();
         } catch (Exception e) {
@@ -103,7 +111,6 @@ public class MainActivity extends AppCompatActivity {
     public Bitmap getResizedBitmap(Bitmap image, int maxSize) {
         int width = image.getWidth();
         int height = image.getHeight();
-
         float bitmapRatio = (float) width / (float) height;
         if (bitmapRatio > 1) {
             width = maxSize;
@@ -112,7 +119,6 @@ public class MainActivity extends AppCompatActivity {
             height = maxSize;
             width = (int) (height * bitmapRatio);
         }
-
         return Bitmap.createScaledBitmap(image, width, height, true);
     }
 
