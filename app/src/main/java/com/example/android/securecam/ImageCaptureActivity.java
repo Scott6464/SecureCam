@@ -2,10 +2,13 @@ package com.example.android.securecam;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.hardware.Camera.Size;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -20,10 +23,11 @@ import java.util.List;
 import java.util.ListIterator;
 
 public class ImageCaptureActivity extends Activity {
+
     private static final String DEBUG_TAG = "StillImageActivity";
     final public static String STILL_IMAGE_FILE = "0.jpg";
-    String photoFiles[] = {"0.jpg", "1.jpg", "2.jpg"};
     int i = 0;
+    Bitmap bitmap, oldbitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +36,6 @@ public class ImageCaptureActivity extends Activity {
         final CameraSurfaceView cameraView = new CameraSurfaceView(getApplicationContext());
         FrameLayout frame = (FrameLayout) findViewById(R.id.frame);
         frame.addView(cameraView);
-
         Button capture = (Button) findViewById(R.id.capture);
         capture.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -41,36 +44,49 @@ public class ImageCaptureActivity extends Activity {
         });
     }
 
-    private void capturePhoto(CameraSurfaceView cameraView) {
-        Log.v(DEBUG_TAG, "Requesting capture");
+    private void capturePhoto(final CameraSurfaceView cameraView) {
+
         cameraView.capture(new Camera.PictureCallback() {
             public void onPictureTaken(byte[] data, Camera camera) {
-                Log.v("Still", "Image data received from camera");
-                FileOutputStream fos;
-                try {
-                    //String pathForAppFiles = getFilesDir().getAbsolutePath();
-                    //pathForAppFiles = pathForAppFiles + "/" + photoFiles[i];
-                    fos = openFileOutput(photoFiles[i], MODE_PRIVATE);
-                    fos.write(data);
-                    fos.close();
-                    //Log.d("Still image filename:", pathForAppFiles);
-                    Toast.makeText(getApplicationContext(), "Picture saved. " + photoFiles[i], Toast.LENGTH_LONG).show();
-                    i++;
-                    if (i > 2) {
-                        i = 0;
+                boolean motionDetected = false;
+                bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+                if (i > 0){motionDetected = detectMotion();}
+                if (motionDetected) {
+                    try {
+                        FileOutputStream fos;
+                        fos = openFileOutput(Integer.toString(i) + ".jpg", MODE_PRIVATE);
+                        fos.write(data);
+                        fos.close();
+                        Toast.makeText(getApplicationContext(), "Motion. Picture saved. " + Integer.toString(i), Toast.LENGTH_SHORT).show();
+                        i++;
+                        if (i > 10) {
+                            return;
+                        }
+                    } catch (Exception e) {
+                        Log.e("Still", "Error writing file", e);
                     }
-                } catch (Exception e) {
-                    Log.e("Still", "Error writing file", e);
                 }
+                oldbitmap = bitmap;
                 camera.startPreview();
+                capturePhoto(cameraView);
             }
         });
     }
 
+    public boolean detectMotion() {
+        MotionDetection md = new MotionDetection(this);
+        return  md.detectMotion(bitmap,oldbitmap);
+    }
+
+
+
+
     private class CameraSurfaceView extends SurfaceView implements
             SurfaceHolder.Callback {
+
         private Camera camera = null;
         private SurfaceHolder mHolder = null;
+
 
         @SuppressWarnings("deprecation")
         public CameraSurfaceView(Context context) {
@@ -84,6 +100,8 @@ public class ImageCaptureActivity extends Activity {
                 mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
             }
         }
+
+
 
         public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
             try {

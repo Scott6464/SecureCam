@@ -27,14 +27,18 @@ public class MainActivity extends AppCompatActivity {
                 new String[]{Manifest.permission.CAMERA, Manifest.permission.INTERNET},
                 1);
     }
-
+/*
     public void detectMotion(View v) {
-        boolean motionDetected;
-        MotionDetection md = new MotionDetection(this);
-        if (md.detectMotion()){Toast.makeText(this, "Motion Detected", Toast.LENGTH_LONG).show();}
-        else {Toast.makeText(this, "No Motion", Toast.LENGTH_LONG).show();}
-    }
 
+        MotionDetection md = new MotionDetection(this);
+        if (md.detectMotion()) {
+            Toast.makeText(this, "Motion Detected", Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(this, "No Motion", Toast.LENGTH_LONG).show();
+        }
+
+    }
+*/
     public void sendReport(View v) {
         Thread t = new Thread() {
             @Override

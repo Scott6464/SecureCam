@@ -19,15 +19,14 @@ public class MotionDetection {
     Bitmap[] bitmaps;
 
     public MotionDetection(Context c) {
-        path = c.getApplicationContext().getFilesDir().getAbsolutePath();
-        getImages();
+        //path = c.getApplicationContext().getFilesDir().getAbsolutePath();
+        //getImages();
     }
 
-    public boolean detectMotion() {
-        return comparePixels(bitmaps[0], bitmaps[1]);
-    }
 
-    private boolean comparePixels(Bitmap b0, Bitmap b1) {
+    public boolean detectMotion(Bitmap b0, Bitmap b1) {
+        b0 = resizeImage(b0,9);
+        b1 = resizeImage(b1,9);
         for (int x=0; x<3; x++) {
             for(int y=0; y<3; y++) {
                 int pixel = b0.getPixel(x, y);
@@ -48,16 +47,16 @@ public class MotionDetection {
         try {
             bitmaps = new Bitmap[3];
             int[] delays = {1000, 1000, 1000};
-            bitmaps[0] = resizeImages(BitmapFactory.decodeStream(new FileInputStream(path + "/0.jpg")), 9);
-            bitmaps[1] = resizeImages(BitmapFactory.decodeStream(new FileInputStream(path + "/1.jpg")), 9);
-            bitmaps[2] = resizeImages(BitmapFactory.decodeStream(new FileInputStream(path + "/2.jpg")), 9);
+            bitmaps[0] = resizeImage(BitmapFactory.decodeStream(new FileInputStream(path + "/0.jpg")), 9);
+            bitmaps[1] = resizeImage(BitmapFactory.decodeStream(new FileInputStream(path + "/1.jpg")), 9);
+            bitmaps[2] = resizeImage(BitmapFactory.decodeStream(new FileInputStream(path + "/2.jpg")), 9);
         } catch (Exception e) {
             Log.e(e.toString(), e.getMessage());
         }
     }
 
 
-    public Bitmap resizeImages(Bitmap image, int maxSize) {
+    public Bitmap resizeImage(Bitmap image, int maxSize) {
         int width = image.getWidth();
         int height = image.getHeight();
         float bitmapRatio = (float) width / (float) height;
