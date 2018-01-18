@@ -7,15 +7,19 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -24,21 +28,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ActivityCompat.requestPermissions(this,
-                new String[]{Manifest.permission.CAMERA, Manifest.permission.INTERNET},
-                1);
+                new String[]{Manifest.permission.CAMERA, Manifest.permission.INTERNET}, 1);
     }
-/*
-    public void detectMotion(View v) {
 
-        MotionDetection md = new MotionDetection(this);
-        if (md.detectMotion()) {
-            Toast.makeText(this, "Motion Detected", Toast.LENGTH_LONG).show();
-        } else {
-            Toast.makeText(this, "No Motion", Toast.LENGTH_LONG).show();
-        }
-
-    }
-*/
     public void sendReport(View v) {
         Thread t = new Thread() {
             @Override
@@ -62,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void emailGif() {
-
         try {
             String pathForAppFiles = getFilesDir().getAbsolutePath() + "/output.gif"; //+ STILL_IMAGE_FILE;
             GMailSender sender = new GMailSender("ruddercontracting@gmail.com", "croutons");
@@ -93,13 +84,24 @@ public class MainActivity extends AppCompatActivity {
         AnimatedGIFWriter writer = new AnimatedGIFWriter(true);
         try {
             OutputStream os = new FileOutputStream(path + "/output.gif");
-            Bitmap[] bitmap = new Bitmap[3];
-            int[] delays = {1000, 1000, 1000};
-            bitmap[0] = getResizedBitmap(rotateImage(BitmapFactory.decodeStream(new FileInputStream(path + "/0.jpg")), 90), 320);
-            bitmap[1] = getResizedBitmap(rotateImage(BitmapFactory.decodeStream(new FileInputStream(path + "/1.jpg")), 90), 320);
-            bitmap[2] = getResizedBitmap(rotateImage(BitmapFactory.decodeStream(new FileInputStream(path + "/2.jpg")), 90), 320);
+            File directory = new File(path + "/");
+            File[] files = directory.listFiles();
+            List<Bitmap> bitmap = new ArrayList<>();
+            for (File file : files) {
+                String fileName = file.getName();
+                Log.i("filename1 ", fileName);
+                if (fileName.contains("jpg")) {
+                    bitmap.add(getResizedBitmap(rotateImage(BitmapFactory.decodeStream
+                            (new FileInputStream(path + "/" + fileName)), 90), 320));
+                }
+            }
+            Bitmap[] bitmapArray = bitmap.toArray(new Bitmap[bitmap.size()]);
+            int[] delayArray = new int[bitmapArray.length];
+            for (int i = 0; i < delayArray.length; i++) {
+                delayArray[i] = 1000;
+            }
 
-            writer.writeAnimatedGIF(bitmap, delays, os);
+            writer.writeAnimatedGIF(bitmapArray, delayArray, os);
             Toast.makeText(getApplicationContext(), "Gif generated.", Toast.LENGTH_LONG).show();
         } catch (Exception e) {
             Log.e(e.toString(), e.getMessage());
