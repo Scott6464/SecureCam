@@ -7,34 +7,18 @@
         android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="takePicture"
-        android:text="Take Photo"
+        android:onClick="startCamera"
+        android:text="Open Camera"
         />
     <Button
         android:id="@+id/display_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="showPicture"
-        android:text="Show Photo"
+        android:onClick="viewPhotos"
+        android:text="View Photos"
         android:layout_below="@+id/button"
         />
 
-    <Button
-        android:id="@+id/send_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="sendReport"
-        android:text="Gen and Send Gif"
-        android:layout_below="@+id/display_button"
-        />
 
-    <Button
-        android:id="@+id/email_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="detectMotion"
-        android:text="Detect Motion"
-        android:layout_below="@+id/send_button"
-        />
 
 </RelativeLayout>

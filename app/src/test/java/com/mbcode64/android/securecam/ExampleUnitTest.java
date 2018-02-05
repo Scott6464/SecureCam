@@ -1,4 +1,4 @@
-package com.example.android.securecam;
+package com.mbcode64.android.securecam;
 
 import org.junit.Test;
 

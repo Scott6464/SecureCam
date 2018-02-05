@@ -1,11 +1,10 @@
-package com.example.android.securecam;
+package com.mbcode64.android.securecam;
 
 /**
  * Created by Scott on 12/12/2017.
  */
 
 import android.util.Log;
-import android.widget.Toast;
 
 import java.io.IOException;
 import java.io.OutputStream;

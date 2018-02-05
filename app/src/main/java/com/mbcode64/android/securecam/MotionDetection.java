@@ -1,13 +1,9 @@
-package com.example.android.securecam;
+package com.mbcode64.android.securecam;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.util.Log;
-import android.widget.Toast;
-
-import java.io.FileInputStream;
 
 /**
  * Created by Scott on 1/14/2018.
@@ -19,8 +15,7 @@ public class MotionDetection {
     Bitmap[] bitmaps;
 
     public MotionDetection(Context c) {
-        //path = c.getApplicationContext().getFilesDir().getAbsolutePath();
-        //getImages();
+
     }
 
 
@@ -40,20 +35,6 @@ public class MotionDetection {
         return false;
     }
 
-
-
-
-    private void getImages() {
-        try {
-            bitmaps = new Bitmap[3];
-            int[] delays = {1000, 1000, 1000};
-            bitmaps[0] = resizeImage(BitmapFactory.decodeStream(new FileInputStream(path + "/0.jpg")), 9);
-            bitmaps[1] = resizeImage(BitmapFactory.decodeStream(new FileInputStream(path + "/1.jpg")), 9);
-            bitmaps[2] = resizeImage(BitmapFactory.decodeStream(new FileInputStream(path + "/2.jpg")), 9);
-        } catch (Exception e) {
-            Log.e(e.toString(), e.getMessage());
-        }
-    }
 
 
     public Bitmap resizeImage(Bitmap image, int maxSize) {

@@ -1,4 +1,4 @@
-package com.example.android.securecam;
+package com.mbcode64.android.securecam;
 
 import android.app.Activity;
 import android.content.Context;
@@ -11,8 +11,6 @@ import android.hardware.Camera;
 import android.hardware.Camera.Size;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.SystemClock;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -21,8 +19,6 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -120,7 +116,7 @@ public class ImageCaptureActivity extends Activity {
         String dateTime = sdf.format(Calendar.getInstance().getTime()); // reading local time in the system
         Canvas cs = new Canvas(dest);
         Paint tPaint = new Paint();
-        tPaint.setTextSize(50);
+        tPaint.setTextSize(150);
         tPaint.setColor(Color.BLUE);
         tPaint.setStyle(Paint.Style.FILL);
         cs.drawBitmap(src, 0f, 0f, null);
